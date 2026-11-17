@@ -9,7 +9,7 @@ URL = 'https://en.wikipedia.org/wiki/Focaccia'
 def test_capture_defaults_trim_and_order(client):
     first = client.post('/api/articles', json={'title': '  Focaccia ', 'url': f' {URL} '})
     assert first.status_code == 201
-    assert first.json == {'id': 1, 'title': 'Focaccia', 'url': URL, 'note': '', 'status': 'to_read', 'collection_ids': []}
+    assert first.json == {'id': 1, 'title': 'Focaccia', 'url': URL, 'note': '', 'status': 'to_read', 'collection_ids': [], 'archived': False}
     second = client.post('/api/articles', json={'title': 'Bread', 'url': 'https://example.com/bread'})
     assert [a['id'] for a in client.get('/api/articles').json['articles']] == [second.json['id'], 1]
 

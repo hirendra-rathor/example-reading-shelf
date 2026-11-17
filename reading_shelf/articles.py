@@ -2,7 +2,7 @@
 import re
 from urllib.parse import urlsplit
 from flask import Blueprint, jsonify, request
-from werkzeug.exceptions import BadRequest, NotFound
+from werkzeug.exceptions import BadRequest, Conflict, NotFound
 from .db import get_db
 
 bp = Blueprint('articles', __name__, url_prefix='/api')
@@ -41,6 +41,7 @@ def article_url(value):
 
 def serialize_article(row):
     article = dict(row)
+    article['archived'] = bool(article['archived'])
     article['collection_ids'] = [r[0] for r in get_db().execute(
         'SELECT collection_id FROM collection_articles WHERE article_id = ? ORDER BY collection_id', (row['id'],)
     )]
@@ -59,10 +60,13 @@ def find_article(article_id):
 @bp.get('/articles')
 def list_articles():
     from .collections import find_collection
-    allowed = {'collection_id', 'status'}
+    allowed = {'collection_id', 'status', 'view'}
     if set(request.args) - allowed or any(len(request.args.getlist(k)) != 1 for k in request.args):
-        raise BadRequest('Use each supported filter once: collection_id, status.')
-    clauses, values = [], []
+        raise BadRequest('Use each supported filter once: collection_id, status, view.')
+    view = request.args.get('view', 'active')
+    if view not in ('active', 'archive'):
+        raise BadRequest('View must be active or archive.')
+    clauses, values = ['a.archived = ?'], [int(view == 'archive')]
     if 'collection_id' in request.args:
         value = request.args['collection_id']
         if not re.fullmatch(r'[1-9][0-9]{0,18}', value) or int(value) > 2**63 - 1:
@@ -103,8 +107,21 @@ def edit_article(article_id):
         raise BadRequest('Status must be to_read, reading, or read.')
     connection = get_db()
     with connection:
-        find_article(article_id)
+        connection.execute('BEGIN IMMEDIATE')
+        if find_article(article_id)['archived']:
+            raise Conflict('Restore this article before editing its reading context.')
         assignments = ', '.join(f'{field} = ?' for field in data)
         connection.execute(f'UPDATE articles SET {assignments} WHERE id = ?', (*data.values(), article_id))
         article = find_article(article_id)
     return jsonify(article)
+
+
+@bp.route('/articles/<int:article_id>/archive', methods=['PUT', 'DELETE'])
+def change_archive(article_id):
+    connection = get_db()
+    with connection:
+        connection.execute('BEGIN IMMEDIATE')
+        find_article(article_id)
+        connection.execute('UPDATE articles SET archived = ? WHERE id = ?', (int(request.method == 'PUT'), article_id))
+        result = find_article(article_id)
+    return jsonify(result)

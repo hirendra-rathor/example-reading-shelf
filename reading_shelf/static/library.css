@@ -29,3 +29,5 @@ a { color:var(--accent); text-decoration-thickness:1px; text-underline-offset:4p
 .organize { padding:20px; margin-bottom:20px; display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap; }
 .filters,#collection-form,.membership-form { display:flex; align-items:end; gap:12px; }.filters label { min-width:150px; }.membership-controls { border-top:1px solid var(--line); padding-top:16px; margin-top:10px; }.memberships { display:flex; flex-wrap:wrap; gap:7px; margin:10px 0; }.memberships button { font-size:.72rem; padding:5px 8px; }.membership-form label { flex:1; }
 @media(max-width:540px) { .filters,#collection-form { width:100%; flex-wrap:wrap; }.filters label,#collection-form label { min-width:0; flex:1; }#collection-form button { white-space:normal; } }
+
+[hidden] { display:none !important; }.lifecycle-controls { border-top:1px solid var(--line); margin-top:16px; padding-top:16px; }.filters { flex-wrap:wrap; }input:disabled,textarea:disabled,select:disabled { opacity:1; color:#61726a; background:#f3f5ef; }.article.archived { background:#f7f8f2; }

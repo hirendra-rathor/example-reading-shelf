@@ -1,6 +1,6 @@
 """Collections group article identities; reading context stays on the article."""
 from flask import Blueprint, jsonify, request
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import Conflict, NotFound
 from .articles import bounded_text, find_article, payload
 from .db import get_db
 
@@ -39,8 +39,10 @@ def create_collection():
 def change_membership(collection_id, article_id):
     connection = get_db()
     with connection:
+        connection.execute('BEGIN IMMEDIATE')
         find_collection(collection_id)
-        find_article(article_id)
+        if find_article(article_id)['archived']:
+            raise Conflict('Restore this article before changing its collections.')
         if request.method == 'PUT':
             connection.execute('INSERT INTO collection_articles VALUES (?, ?) ON CONFLICT DO NOTHING', (collection_id, article_id))
         else:

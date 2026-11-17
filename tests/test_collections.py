@@ -94,5 +94,5 @@ def test_upgrade_from_populated_milestone_one(tmp_path):
         db.execute('INSERT INTO articles VALUES (42,?,?,?,?)',('Focaccia','https://example.com/focaccia','Keep this','reading'))
     for _ in range(2):
         client=create_app(str(path)).test_client()
-        assert client.get('/api/articles').json['articles']==[{'id':42,'title':'Focaccia','url':'https://example.com/focaccia','note':'Keep this','status':'reading','collection_ids':[]}]
+        assert client.get('/api/articles').json['articles']==[{'id':42,'title':'Focaccia','url':'https://example.com/focaccia','note':'Keep this','status':'reading','collection_ids':[], 'archived':False}]
     c=collection(client,'Food');assert add(client,c,{'id':42}).status_code==200

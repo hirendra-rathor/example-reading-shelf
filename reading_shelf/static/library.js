@@ -4,7 +4,7 @@ const statusNames = {to_read: 'To read', reading: 'Reading', read: 'Read'};
 const drafts = new Map();
 let busy = false;
 let collections = [];
-let filters = {collection_id: '', status: ''};
+let filters = {collection_id: '', status: '', view: 'active'};
 
 function message(text, error = false) {
   $('#message').textContent = text;
@@ -31,6 +31,7 @@ async function action(work) {
   try { await work(); } catch (error) { message(error.message, true); } finally { setBusy(false); }
 }
 function showFilters() {
+  $('#view-filter').value = filters.view;
   $('#collection-filter').value = filters.collection_id;
   $('#status-filter').value = filters.status;
 }
@@ -58,7 +59,8 @@ function renderArticles(articles) {
     const link = $('h3 a', card);
     link.textContent = article.title; link.href = article.url;
     $('.article-url', card).textContent = article.url;
-    $('.status-badge', card).textContent = statusNames[article.status];
+    $('.status-badge', card).textContent = statusNames[article.status] + (article.archived ? ' · Archived' : '');
+    card.classList.toggle('archived', article.archived);
     const form = $('.edit-form', card);
     const note = form.elements.note, status = form.elements.status;
     const draft = drafts.get(article.id) || article;
@@ -111,6 +113,21 @@ function renderArticles(articles) {
         await afterWrite('Article added to the collection.');
       });
     });
+    if (article.archived) {
+      card.querySelectorAll('.edit-form input,.edit-form textarea,.edit-form select,.edit-form button,.memberships button').forEach(e => { e.dataset.unavailable = 'true'; });
+      memberForm.hidden = true;
+      hint.textContent = 'Restore this article to edit its note, status, or collections.';
+    }
+    const archiveButton = $('.archive-action', card);
+    archiveButton.textContent = article.archived ? 'Restore article' : 'Archive article';
+    archiveButton.addEventListener('click', () => action(async () => {
+      requireSavedDrafts();
+      await request(`/api/articles/${article.id}/archive`, article.archived ? 'DELETE' : 'PUT');
+      card.remove();
+      const remaining = document.querySelectorAll('#articles > .article').length;
+      $('#count').textContent = `(${remaining})`; $('#empty').hidden = remaining !== 0;
+      await afterWrite(article.archived ? 'Article restored with its reading context and collections.' : 'Article archived. Find it in the Archive view.');
+    }));
     $('#articles').append(card);
   }
   if (busy) setBusy(true);
@@ -119,8 +136,8 @@ $('#capture-form').addEventListener('submit', event => {
   event.preventDefault();
   const form = event.currentTarget;
   action(async () => {
-    await request('/api/articles', 'POST', {title: form.elements.title.value, url: form.elements.url.value});
-    form.reset(); await afterWrite('Article saved. Existing links keep their note and progress.');
+    const saved = await request('/api/articles', 'POST', {title: form.elements.title.value, url: form.elements.url.value});
+    form.reset(); await afterWrite(saved.archived ? 'This article is archived. Open Archive to restore it.' : 'Article saved. Existing links keep their note and progress.');
   });
 });
 $('#collection-form').addEventListener('submit', event => {
@@ -131,11 +148,14 @@ for (const selector of ['#collection-filter', '#status-filter']) {
   $(selector).addEventListener('change', () => action(async () => {
     try {
       requireSavedDrafts();
-      await reload({collection_id:$('#collection-filter').value, status:$('#status-filter').value});
+      await reload({collection_id:$('#collection-filter').value, status:$('#status-filter').value, view:filters.view});
       message('Library view updated.');
     } finally { showFilters(); }
   }));
 }
+$('#view-filter').addEventListener('change', () => action(async () => {
+  try { requireSavedDrafts(); await reload({collection_id:'', status:'', view:$('#view-filter').value}); message(filters.view === 'archive' ? 'Your archived articles.' : 'Your active library.'); } finally { showFilters(); }
+}));
 $('#refresh').addEventListener('click', () => action(async () => { await reload(); message('Library refreshed.'); }));
 window.addEventListener('beforeunload', event => { if (drafts.size) { event.preventDefault(); event.returnValue = ''; } });
 action(reload);

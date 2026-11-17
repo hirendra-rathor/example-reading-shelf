@@ -22,7 +22,7 @@
     <section aria-labelledby="library-heading">
       <div class="section-heading"><div><p class="eyebrow">MAKE TIME TO COME BACK</p><h2 id="library-heading">Your library <span id="count"></span></h2></div><button id="refresh" class="secondary" type="button">Refresh</button></div>
       <div class="organize panel">
-        <div class="filters"><label>Collection<select id="collection-filter"><option value="">Whole library</option></select></label><label>Show status<select id="status-filter"><option value="">Any status</option><option value="to_read">To read</option><option value="reading">Reading</option><option value="read">Read</option></select></label></div>
+        <div class="filters"><label>View<select id="view-filter"><option value="active">Library</option><option value="archive">Archive</option></select></label><label>Collection<select id="collection-filter"><option value="">Whole library</option></select></label><label>Show status<select id="status-filter"><option value="">Any status</option><option value="to_read">To read</option><option value="reading">Reading</option><option value="read">Read</option></select></label></div>
         <form id="collection-form"><label>New collection<input name="name" maxlength="100" required placeholder="Food and cooking"></label><button type="submit" class="secondary">Create collection</button></form>
       </div>
       <div id="articles" class="articles"></div>
@@ -40,6 +40,7 @@
         <p class="draft-hint" aria-live="polite"></p>
       </form>
       <div class="membership-controls"><p class="eyebrow">IN YOUR COLLECTIONS</p><div class="memberships"></div><form class="membership-form"><label>Add to collection<select name="collection" required></select></label><button type="submit" class="secondary">Add</button></form></div>
+      <div class="lifecycle-controls"><button class="archive-action secondary" type="button">Archive article</button></div>
     </article>
   </template>
 </body>

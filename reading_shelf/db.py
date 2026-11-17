@@ -40,3 +40,6 @@ def initialize():
             PRIMARY KEY (collection_id, article_id)
         )''')
         connection.execute('CREATE INDEX IF NOT EXISTS memberships_by_article ON collection_articles(article_id)')
+        columns = {row['name'] for row in connection.execute('PRAGMA table_info(articles)')}
+        if 'archived' not in columns:
+            connection.execute('ALTER TABLE articles ADD COLUMN archived INTEGER NOT NULL DEFAULT 0 CHECK (archived IN (0, 1))')
