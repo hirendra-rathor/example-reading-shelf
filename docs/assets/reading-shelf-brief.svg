@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="675" viewBox="0 0 960 675" role="img" aria-labelledby="title description" lang="en" style="color-scheme:dark">
+  <title id="title">Let’s build Reading Shelf</title>
+  <desc id="description">A reader saves Wikipedia’s Focaccia article and marks it Reading. Their note reads “Try rosemary on top.” Selecting the title opens the original article on the source website. A developer and coding assistant build the application. An architect, AppSec engineer, and maintainer help shape its design.</desc>
+  <defs>
+    <marker id="ordinary-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#a6bac4" />
+    </marker>
+    <marker id="evidence-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ccb8f0" />
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="675" rx="0" fill="#131b23" stroke="none" stroke-width="1" />
+  <rect x="0.75" y="0.75" width="958.5" height="673.5" rx="8" fill="none" stroke="#475866" stroke-width="1.5" />
+  <g id="heading">
+    <text x="32" y="39" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#8adbb5" font-weight="700" letter-spacing="1.4">APPLICATION BRIEF</text>
+    <text x="31" y="91" font-family="Georgia, 'Times New Roman', serif" font-size="39" fill="#edf1f2">Let’s build Reading Shelf</text>
+    <text x="33" y="129" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#c4d0d6">A reader needs a personal library for articles on the web.</text>
+  </g>
+  <g id="reader">
+    <circle cx="81" cy="316" r="36" fill="#20332e" stroke="#3b5a4c" />
+    <circle cx="81" cy="306" r="8" fill="none" stroke="#8adbb5" stroke-width="2" />
+    <path d="M 65 329 Q 66 315 81 315 Q 96 315 97 329" fill="none" stroke="#8adbb5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="81" y="381" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#8adbb5" font-weight="700" text-anchor="middle">Reader</text>
+    <text x="81" y="408" font-family="Arial, Helvetica, sans-serif" font-size="16.5" fill="#c4d0d6" text-anchor="middle">saves a link</text>
+    <path d="M 120 316 H 155" fill="none" stroke="#a6bac4" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ordinary-arrow)" />
+  </g>
+  <g id="library-in-the-browser">
+    <rect x="161" y="166" width="592" height="344" rx="12" fill="#1b2731" stroke="#475866" stroke-width="1.5" />
+    <circle cx="180" cy="190" r="3.4" fill="#acbdc6" />
+    <circle cx="193" cy="190" r="3.4" fill="#acbdc6" />
+    <circle cx="206" cy="190" r="3.4" fill="#acbdc6" />
+    <text x="734" y="196" font-family="Arial, Helvetica, sans-serif" font-size="16.5" fill="#c4d0d6" text-anchor="end">Reader’s browser</text>
+    <line x1="162" y1="210" x2="752" y2="210" stroke="#384853" stroke-width="1" />
+    <path d="M 183 228 h 15 v 20 l -7.5 -5 l -7.5 5 Z" fill="none" stroke="#8adbb5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="212" y="250" font-family="Georgia, 'Times New Roman', serif" font-size="28" fill="#edf1f2">Reading Shelf</text>
+    <line x1="183" y1="266" x2="731" y2="266" stroke="#384853" stroke-width="1" />
+    <line x1="452" y1="280" x2="452" y2="486" stroke="#384853" stroke-width="1" />
+    <text x="182" y="298" font-family="Arial, Helvetica, sans-serif" font-size="15.5" fill="#acbdc6" font-weight="700" letter-spacing="0.9">ADD AN ARTICLE</text>
+    <text x="182" y="327" font-family="Arial, Helvetica, sans-serif" font-size="16.5" fill="#c4d0d6">Title</text>
+    <rect x="182" y="335" width="263" height="34" rx="5" fill="#17212a" stroke="#475866" stroke-width="1" />
+    <text x="191" y="358" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#edf1f2">Focaccia</text>
+    <text x="182" y="394" font-family="Arial, Helvetica, sans-serif" font-size="16.5" fill="#c4d0d6">URL</text>
+    <rect x="182" y="402" width="263" height="34" rx="5" fill="#17212a" stroke="#475866" stroke-width="1" />
+    <text x="191" y="424" font-family="Arial, Helvetica, sans-serif" font-size="14.5" fill="#edf1f2">https://en.wikipedia.org/wiki/Focaccia</text>
+    <rect x="182" y="450" width="117" height="36" rx="6" fill="#8adbb5" stroke="none" stroke-width="1" />
+    <text x="241" y="474" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#131b23" font-weight="700" text-anchor="middle">Save article</text>
+    <text x="473" y="298" font-family="Arial, Helvetica, sans-serif" font-size="15.5" fill="#acbdc6" font-weight="700" letter-spacing="0.9">IN THE LIBRARY</text>
+    <text x="473" y="334" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#8adbb5" font-weight="700">Focaccia</text>
+    <line x1="473" y1="340" x2="557" y2="340" stroke="#8adbb5" stroke-width="1" />
+    <path d="M 569 334 l 12 -12 m -10 0 h 10 v 10" fill="none" stroke="#8adbb5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="473" y="372" font-family="Arial, Helvetica, sans-serif" font-size="16.5" fill="#c4d0d6">Note</text>
+    <rect x="473" y="380" width="257" height="36" rx="5" fill="#17212a" stroke="#475866" stroke-width="1" />
+    <text x="483" y="404" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#edf1f2">Try rosemary on top.</text>
+    <text x="473" y="448" font-family="Arial, Helvetica, sans-serif" font-size="16.5" fill="#c4d0d6">Reading status</text>
+    <rect x="473" y="456" width="76" height="30" rx="7" fill="#17212a" stroke="#475866" stroke-width="1" />
+    <text x="511.0" y="477" font-family="Arial, Helvetica, sans-serif" font-size="15.5" fill="#c4d0d6" text-anchor="middle">To read</text>
+    <rect x="555" y="456" width="83" height="30" rx="7" fill="#20332e" stroke="#8adbb5" stroke-width="1" />
+    <text x="596.5" y="477" font-family="Arial, Helvetica, sans-serif" font-size="15.5" fill="#8adbb5" text-anchor="middle">Reading</text>
+    <rect x="644" y="456" width="65" height="30" rx="7" fill="#17212a" stroke="#475866" stroke-width="1" />
+    <text x="676.5" y="477" font-family="Arial, Helvetica, sans-serif" font-size="15.5" fill="#c4d0d6" text-anchor="middle">Read</text>
+  </g>
+  <g id="source-website">
+    <path d="M 755 328 H 817" fill="none" stroke="#a6bac4" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ordinary-arrow)" />
+    <rect x="827" y="290" width="49" height="62" rx="4" fill="#1b2731" stroke="#acbdc6" stroke-width="1.6" />
+    <line x1="838" y1="306" x2="864" y2="306" stroke="#acbdc6" stroke-width="1.6" />
+    <line x1="838" y1="315" x2="860" y2="315" stroke="#acbdc6" stroke-width="1.6" />
+    <line x1="838" y1="324" x2="864" y2="324" stroke="#acbdc6" stroke-width="1.6" />
+    <line x1="838" y1="333" x2="854" y2="333" stroke="#acbdc6" stroke-width="1.6" />
+    <text x="853" y="381" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#edf1f2" font-weight="700" text-anchor="middle">Source website</text>
+    <text x="853" y="407" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#c4d0d6" text-anchor="middle">Wikipedia hosts</text>
+    <text x="853" y="429" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#c4d0d6" text-anchor="middle">the original article</text>
+  </g>
+  <g id="design-team">
+    <line x1="32" y1="538" x2="928" y2="538" stroke="#475866" stroke-width="1" />
+    <text x="33" y="572" font-family="Arial, Helvetica, sans-serif" font-size="15.5" fill="#acbdc6" font-weight="700" letter-spacing="0.9">BUILDING THE APPLICATION</text>
+    <text x="33" y="612" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#edf1f2" font-weight="700">Developer and coding assistant</text>
+    <line x1="409" y1="563" x2="409" y2="628" stroke="#384853" stroke-width="1" />
+    <text x="435" y="588" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#c4d0d6">The reader uses Reading Shelf to keep a list of</text>
+    <text x="435" y="616" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#c4d0d6">articles. The architect, AppSec engineer, and</text>
+    <text x="435" y="644" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#c4d0d6">maintainer help shape its design.</text>
+  </g>
+</svg>
