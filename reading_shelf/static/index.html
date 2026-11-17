@@ -4,21 +4,38 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Reading Shelf</title>
-  <style>
-    body { margin: 0; background: #faf8f3; color: #23362e; font: 1.125rem/1.6 system-ui, sans-serif; }
-    main { max-width: 38rem; margin: 12vh auto; padding: 0 1.5rem; }
-    h1 { margin: 0.25rem 0; font: 3rem/1.15 Georgia, serif; }
-    h2 { margin: 2rem 0 0.25rem; font-size: 1.2rem; }
-    p { margin: 0.5rem 0; }
-  </style>
+  <link rel="stylesheet" href="/static/library.css">
+  <script src="/static/library.js" defer></script>
 </head>
 <body>
-  <main>
-    <p>Continuous Assurance example</p>
-    <h1>Reading Shelf</h1>
-    <p>A personal library for articles you want to read and notes you want to keep.</p>
-    <h2>Starter checkpoint</h2>
-    <p>The first build prompt adds saving an article, writing a note, and tracking reading progress.</p>
+  <header class="masthead"><div class="wrap"><p class="eyebrow">A LITTLE SPACE FOR GOOD READING</p><h1>Reading Shelf</h1><p class="intro">Keep the links. Remember the thought. Pick up where you left off.</p></div></header>
+  <main class="wrap">
+    <section class="capture panel" aria-labelledby="capture-heading">
+      <div><p class="eyebrow">SAVE SOMETHING GOOD</p><h2 id="capture-heading">Your next read</h2></div>
+      <form id="capture-form">
+        <label>Article title<input name="title" required maxlength="200" placeholder="A title worth remembering" autocomplete="off"></label>
+        <label>Original link<input name="url" type="url" required maxlength="4096" placeholder="https://…"></label>
+        <button type="submit">Save article</button>
+      </form>
+    </section>
+    <p id="message" role="status" aria-live="polite"></p>
+    <section aria-labelledby="library-heading">
+      <div class="section-heading"><div><p class="eyebrow">MAKE TIME TO COME BACK</p><h2 id="library-heading">Your library <span id="count"></span></h2></div><button id="refresh" class="secondary" type="button">Refresh</button></div>
+      <div id="articles" class="articles"></div>
+      <p id="empty" class="empty" hidden>No articles yet. Save a link above to begin your shelf.</p>
+    </section>
   </main>
+  <footer class="wrap">A personal reading library · saved on this computer</footer>
+  <template id="article-template">
+    <article class="article panel">
+      <div class="article-heading"><h3><a target="_blank" rel="noopener noreferrer"></a></h3><span class="status-badge"></span></div>
+      <p class="article-url"></p>
+      <form class="edit-form">
+        <label>Your note<textarea name="note" rows="3" maxlength="10000" placeholder="Why did this catch your attention?"></textarea></label>
+        <div class="edit-actions"><label>Reading status<select name="status"><option value="to_read">To read</option><option value="reading">Reading</option><option value="read">Read</option></select></label><div class="buttons"><button class="secondary" type="reset">Revert</button><button type="submit">Save changes</button></div></div>
+        <p class="draft-hint" aria-live="polite"></p>
+      </form>
+    </article>
+  </template>
 </body>
 </html>
