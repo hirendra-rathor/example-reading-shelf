@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1460 750" width="1460" height="750" role="img" aria-labelledby="title desc" font-family="Arial, Helvetica, sans-serif">
+<title id="title">How a saved article survives a restart</title><desc id="desc">Collaboration view. The library page sends POST, PATCH, and GET requests to the Articles API, which calls the Library store; the store reads and writes the articles table in instance/reading-shelf.sqlite3. The app factory creates the table at each start. Clicking the title opens the source website directly. Green is new, blue is changed, gray is context.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#435970"/></marker><marker id="arrow-new" viewBox="0 0 10 10" refX="8.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#22a06b"/></marker><marker id="arrow-changed" viewBox="0 0 10 10" refX="8.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#3b82f6"/></marker><marker id="arrow-deleted" viewBox="0 0 10 10" refX="8.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#dc2626"/></marker><marker id="arrow-context" viewBox="0 0 10 10" refX="8.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#a3a3a3"/></marker></defs>
+<rect width="1460" height="750" fill="white"/>
+<text x="28" y="43" font-size="29" font-weight="700" fill="#182f46" text-anchor="start">How a saved article survives a restart</text>
+<text x="28" y="75" font-size="17" font-weight="400" fill="#182f46" text-anchor="start">Follow “Focaccia” from the library page through the Flask app into the SQLite file, and back after a restart.</text>
+<rect x="1396" y="20" width="45" height="23" rx="4" fill="#22a06b"/>
+<text x="1418.5" y="36" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">new</text>
+<rect x="1313" y="20" width="75" height="23" rx="4" fill="#3b82f6"/>
+<text x="1350.5" y="36" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">changed</text>
+<rect x="1235" y="20" width="70" height="23" rx="4" fill="#a3a3a3"/>
+<text x="1270.0" y="36" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">context</text>
+<rect x="24" y="100" width="310" height="350" rx="9" fill="#f3f6f9" stroke="#a7b4c2" stroke-width="1.6" stroke-dasharray="6 5"/>
+<text x="40" y="124" font-size="13" font-weight="700" fill="#48617a" text-anchor="start">READER’S BROWSER</text>
+<rect x="44" y="175" width="270" height="150" rx="7" fill="#f9fbfd" stroke="#3b82f6" stroke-width="2.6"/>
+<rect x="229" y="164" width="75" height="23" rx="4" fill="#3b82f6"/>
+<text x="266.5" y="180" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">changed</text>
+<text x="56" y="199" font-size="12" font-weight="700" fill="#48617a" text-anchor="start">COMPONENT</text>
+<text x="56" y="225" font-size="19" font-weight="700" fill="#182f46" text-anchor="start">Library page</text>
+<text x="56" y="253" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">index.html + app.js</text>
+<text x="56" y="273" font-size="14.5" font-weight="400" fill="#586674" text-anchor="start">Today: static starter text.</text>
+<text x="56" y="293" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">Proposed: form, list, note,</text>
+<text x="56" y="313" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">status buttons.</text>
+<rect x="44" y="560" width="270" height="120" rx="7" fill="#f9fbfd" stroke="#a3a3a3" stroke-width="2.6"/>
+<rect x="234" y="549" width="70" height="23" rx="4" fill="#a3a3a3"/>
+<text x="269.0" y="565" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">context</text>
+<text x="56" y="584" font-size="12" font-weight="700" fill="#48617a" text-anchor="start">EXTERNAL SITE</text>
+<text x="56" y="610" font-size="19" font-weight="700" fill="#182f46" text-anchor="start">Source website</text>
+<text x="56" y="638" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">en.wikipedia.org/wiki/Focaccia</text>
+<text x="56" y="658" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">opens in a new tab.</text>
+<rect x="410" y="100" width="470" height="620" rx="9" fill="#f3f6f9" stroke="#a7b4c2" stroke-width="1.6" stroke-dasharray="6 5"/>
+<text x="426" y="124" font-size="13" font-weight="700" fill="#48617a" text-anchor="start">FLASK APP PROCESS  ·  flask --app reading_shelf run</text>
+<rect x="520" y="175" width="320" height="120" rx="7" fill="#f9fbfd" stroke="#22a06b" stroke-width="2.6"/>
+<rect x="785" y="164" width="45" height="23" rx="4" fill="#22a06b"/>
+<text x="807.5" y="180" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">new</text>
+<text x="532" y="199" font-size="12" font-weight="700" fill="#48617a" text-anchor="start">COMPONENT · api.py</text>
+<text x="532" y="225" font-size="19" font-weight="700" fill="#182f46" text-anchor="start">Articles API</text>
+<text x="532" y="253" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">Checks the JSON body, calls</text>
+<text x="532" y="273" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">the store, picks the status.</text>
+<rect x="520" y="385" width="320" height="120" rx="7" fill="#f9fbfd" stroke="#22a06b" stroke-width="2.6"/>
+<rect x="785" y="374" width="45" height="23" rx="4" fill="#22a06b"/>
+<text x="807.5" y="390" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">new</text>
+<text x="532" y="409" font-size="12" font-weight="700" fill="#48617a" text-anchor="start">COMPONENT · library.py</text>
+<text x="532" y="435" font-size="19" font-weight="700" fill="#182f46" text-anchor="start">Library store</text>
+<text x="532" y="463" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">Enforces link, title, note,</text>
+<text x="532" y="483" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">and status rules.</text>
+<rect x="520" y="575" width="320" height="120" rx="7" fill="#f9fbfd" stroke="#3b82f6" stroke-width="2.6"/>
+<rect x="755" y="564" width="75" height="23" rx="4" fill="#3b82f6"/>
+<text x="792.5" y="580" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">changed</text>
+<text x="532" y="599" font-size="12" font-weight="700" fill="#48617a" text-anchor="start">COMPONENT · __init__.py</text>
+<text x="532" y="625" font-size="19" font-weight="700" fill="#182f46" text-anchor="start">App factory</text>
+<text x="532" y="653" font-size="14.5" font-weight="400" fill="#586674" text-anchor="start">Today: opens the file only.</text>
+<text x="532" y="673" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">Proposed: creates schema,</text>
+<text x="532" y="693" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">registers the API.</text>
+<rect x="1010" y="100" width="426" height="620" rx="9" fill="#f3f6f9" stroke="#a7b4c2" stroke-width="1.6" stroke-dasharray="6 5"/>
+<text x="1026" y="124" font-size="13" font-weight="700" fill="#48617a" text-anchor="start">INSTANCE FOLDER  ·  survives restart</text>
+<rect x="1030" y="175" width="386" height="330" rx="7" fill="#f9fbfd" stroke="#22a06b" stroke-width="2.6"/>
+<rect x="1361" y="164" width="45" height="23" rx="4" fill="#22a06b"/>
+<text x="1383.5" y="180" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">new</text>
+<text x="1042" y="199" font-size="12" font-weight="700" fill="#48617a" text-anchor="start">STATE ELEMENT · reading-shelf.sqlite3</text>
+<text x="1042" y="225" font-size="19" font-weight="700" fill="#182f46" text-anchor="start">articles table</text>
+<text x="1042" y="253" font-size="14.5" font-weight="700" fill="#48617a" text-anchor="start">id</text>
+<text x="1122" y="253" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">1</text>
+<text x="1042" y="273" font-size="14.5" font-weight="700" fill="#48617a" text-anchor="start">url</text>
+<text x="1122" y="273" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">https://en.wikipedia.org/wiki/Focaccia</text>
+<text x="1042" y="293" font-size="14.5" font-weight="700" fill="#48617a" text-anchor="start">title</text>
+<text x="1122" y="293" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">Focaccia</text>
+<text x="1042" y="313" font-size="14.5" font-weight="700" fill="#48617a" text-anchor="start">note</text>
+<text x="1122" y="313" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">Try rosemary on top.</text>
+<text x="1042" y="333" font-size="14.5" font-weight="700" fill="#48617a" text-anchor="start">status</text>
+<text x="1122" y="333" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">reading</text>
+<text x="1042" y="353" font-size="14.5" font-weight="700" fill="#48617a" text-anchor="start">saved_at</text>
+<text x="1122" y="353" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">2026-11-17T19:00:00Z</text>
+<text x="1042" y="373" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start"></text>
+<text x="1042" y="393" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">UNIQUE (url)</text>
+<text x="1042" y="413" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">CHECK status IN (to_read, reading, read)</text>
+<text x="1042" y="433" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">PRAGMA user_version = 1</text>
+<text x="1030" y="560.0" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">A restart starts a new process.</text>
+<text x="1030" y="579.5" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">The same file supplies the row,</text>
+<text x="1030" y="599.0" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">so ③ returns the note and status.</text>
+<path d="M150 325 L150 558" fill="none" stroke="#435970" stroke-width="1.8" marker-end="url(#arrow)"/>
+<path d="M316 225 L518 225" fill="none" stroke="#435970" stroke-width="1.8" marker-end="url(#arrow)"/>
+<path d="M518 265 L318 265" fill="none" stroke="#435970" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+<path d="M680 295 L680 383" fill="none" stroke="#435970" stroke-width="1.8" marker-end="url(#arrow)"/>
+<path d="M842 445 L1028 445" fill="none" stroke="#435970" stroke-width="1.8" marker-end="url(#arrow)"/>
+<path d="M842 635 L1220 635 L1220 507" fill="none" stroke="#435970" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="160" y="500" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">④ click “Focaccia”:</text>
+<text x="160" y="517" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">browser follows url</text>
+<text x="338" y="175" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">① POST /api/articles</text>
+<text x="338" y="192" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">② PATCH /api/articles/1</text>
+<text x="338" y="209" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">③ GET /api/articles</text>
+<text x="338" y="290" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">article JSON, or</text>
+<text x="338" y="307" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">{error} with 400/404/409</text>
+<text x="692" y="345" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">add · update · list</text>
+<text x="860" y="425" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">INSERT · UPDATE</text>
+<text x="860" y="442" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">· SELECT</text>
+<text x="860" y="662" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">CREATE TABLE IF NOT EXISTS</text>
+<text x="860" y="679" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">on every start</text>
+</svg>
