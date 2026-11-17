@@ -1,4 +1,5 @@
 """Article JSON operations; validation happens before each transactional write."""
+import re
 from urllib.parse import urlsplit
 from flask import Blueprint, jsonify, request
 from werkzeug.exceptions import BadRequest, NotFound
@@ -38,17 +39,45 @@ def article_url(value):
     return value
 
 
+def serialize_article(row):
+    article = dict(row)
+    article['collection_ids'] = [r[0] for r in get_db().execute(
+        'SELECT collection_id FROM collection_articles WHERE article_id = ? ORDER BY collection_id', (row['id'],)
+    )]
+    return article
+
+
 def find_article(article_id):
+    if not 0 < article_id <= 2**63 - 1:
+        raise NotFound('Article not found.')
     row = get_db().execute('SELECT * FROM articles WHERE id = ?', (article_id,)).fetchone()
     if row is None:
         raise NotFound('Article not found.')
-    return dict(row)
+    return serialize_article(row)
 
 
 @bp.get('/articles')
 def list_articles():
-    rows = get_db().execute('SELECT * FROM articles ORDER BY id DESC').fetchall()
-    return jsonify(articles=[dict(row) for row in rows])
+    from .collections import find_collection
+    allowed = {'collection_id', 'status'}
+    if set(request.args) - allowed or any(len(request.args.getlist(k)) != 1 for k in request.args):
+        raise BadRequest('Use each supported filter once: collection_id, status.')
+    clauses, values = [], []
+    if 'collection_id' in request.args:
+        value = request.args['collection_id']
+        if not re.fullmatch(r'[1-9][0-9]{0,18}', value) or int(value) > 2**63 - 1:
+            raise BadRequest('Collection ID must be a positive integer.')
+        find_collection(int(value))
+        clauses.append('EXISTS (SELECT 1 FROM collection_articles m WHERE m.article_id = a.id AND m.collection_id = ?)')
+        values.append(int(value))
+    if 'status' in request.args:
+        if request.args['status'] not in STATUSES:
+            raise BadRequest('Status must be to_read, reading, or read.')
+        clauses.append('a.status = ?')
+        values.append(request.args['status'])
+    where = ' WHERE ' + ' AND '.join(clauses) if clauses else ''
+    rows = get_db().execute('SELECT a.* FROM articles a' + where + ' ORDER BY a.id DESC', values).fetchall()
+    return jsonify(articles=[serialize_article(row) for row in rows])
 
 
 @bp.post('/articles')
@@ -62,7 +91,7 @@ def capture_article():
             'INSERT INTO articles (title, url) VALUES (?, ?) ON CONFLICT(url) DO NOTHING', (title, url)
         ).rowcount
         row = connection.execute('SELECT * FROM articles WHERE url = ?', (url,)).fetchone()
-    return jsonify(dict(row)), 201 if inserted else 200
+    return jsonify(serialize_article(row)), 201 if inserted else 200
 
 
 @bp.patch('/articles/<int:article_id>')

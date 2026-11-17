@@ -3,6 +3,8 @@ const $ = (selector, root = document) => root.querySelector(selector);
 const statusNames = {to_read: 'To read', reading: 'Reading', read: 'Read'};
 const drafts = new Map();
 let busy = false;
+let collections = [];
+let filters = {collection_id: '', status: ''};
 
 function message(text, error = false) {
   $('#message').textContent = text;
@@ -10,7 +12,7 @@ function message(text, error = false) {
 }
 function setBusy(value) {
   busy = value;
-  document.querySelectorAll('button, input, textarea, select').forEach(control => { control.disabled = value; });
+  document.querySelectorAll('button, input, textarea, select').forEach(control => { control.disabled = value || control.dataset.unavailable === 'true'; });
 }
 async function request(path, method = 'GET', data) {
   let response;
@@ -28,9 +30,19 @@ async function action(work) {
   setBusy(true);
   try { await work(); } catch (error) { message(error.message, true); } finally { setBusy(false); }
 }
-async function reload() {
-  const result = await request('/api/articles');
-  renderArticles(result.articles);
+function showFilters() {
+  $('#collection-filter').value = filters.collection_id;
+  $('#status-filter').value = filters.status;
+}
+function requireSavedDrafts() {
+  if (drafts.size) throw new Error('Save or revert your article edits before changing the view or memberships.');
+}
+async function reload(nextFilters = filters) {
+  const query = new URLSearchParams(Object.entries(nextFilters).filter(([,value]) => value !== ''));
+  const [catalog, result] = await Promise.all([request('/api/collections'), request(`/api/articles?${query}`)]);
+  collections = catalog.collections; filters = {...nextFilters};
+  $('#collection-filter').replaceChildren(new Option('Whole library', ''), ...collections.map(c => new Option(c.name, c.id)));
+  showFilters(); renderArticles(result.articles);
 }
 async function afterWrite(text) {
   try { await reload(); message(text); }
@@ -73,6 +85,32 @@ function renderArticles(articles) {
         await afterWrite('Reading context saved.');
       });
     });
+    const memberships = $('.memberships', card);
+    for (const collection of collections.filter(c => article.collection_ids.includes(c.id))) {
+      const remove = document.createElement('button');
+      remove.type = 'button'; remove.className = 'secondary';
+      remove.textContent = `${collection.name} ×`;
+      remove.setAttribute('aria-label', `Remove from ${collection.name}`);
+      remove.addEventListener('click', () => action(async () => {
+        requireSavedDrafts();
+        await request(`/api/collections/${collection.id}/articles/${article.id}`, 'DELETE');
+        await afterWrite(`Removed from ${collection.name}. The article remains in your library.`);
+      }));
+      memberships.append(remove);
+    }
+    const memberForm = $('.membership-form', card);
+    const available = collections.filter(c => !article.collection_ids.includes(c.id));
+    memberForm.elements.collection.replaceChildren(new Option('Choose a collection', ''), ...available.map(c => new Option(c.name, c.id)));
+    memberForm.querySelectorAll('select,button').forEach(e => { e.dataset.unavailable = String(available.length === 0); });
+    memberForm.addEventListener('submit', event => {
+      event.preventDefault(); action(async () => {
+        requireSavedDrafts();
+        const id = memberForm.elements.collection.value;
+        if (!id) throw new Error('Choose a collection first.');
+        await request(`/api/collections/${id}/articles/${article.id}`, 'PUT');
+        await afterWrite('Article added to the collection.');
+      });
+    });
     $('#articles').append(card);
   }
   if (busy) setBusy(true);
@@ -85,6 +123,19 @@ $('#capture-form').addEventListener('submit', event => {
     form.reset(); await afterWrite('Article saved. Existing links keep their note and progress.');
   });
 });
+$('#collection-form').addEventListener('submit', event => {
+  event.preventDefault(); const form = event.currentTarget;
+  action(async () => { await request('/api/collections', 'POST', {name:form.elements.name.value}); form.reset(); await afterWrite('Collection ready. Add articles using their collection controls.'); });
+});
+for (const selector of ['#collection-filter', '#status-filter']) {
+  $(selector).addEventListener('change', () => action(async () => {
+    try {
+      requireSavedDrafts();
+      await reload({collection_id:$('#collection-filter').value, status:$('#status-filter').value});
+      message('Library view updated.');
+    } finally { showFilters(); }
+  }));
+}
 $('#refresh').addEventListener('click', () => action(async () => { await reload(); message('Library refreshed.'); }));
 window.addEventListener('beforeunload', event => { if (drafts.size) { event.preventDefault(); event.returnValue = ''; } });
 action(reload);

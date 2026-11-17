@@ -22,6 +22,7 @@ def close_db(error=None):
 def initialize():
     connection = get_db()
     with connection:
+        connection.execute('BEGIN IMMEDIATE')
         connection.execute('''CREATE TABLE IF NOT EXISTS articles (
             id INTEGER PRIMARY KEY,
             title TEXT NOT NULL,
@@ -30,3 +31,12 @@ def initialize():
             status TEXT NOT NULL DEFAULT 'to_read'
                 CHECK (status IN ('to_read', 'reading', 'read'))
         )''')
+        connection.execute('''CREATE TABLE IF NOT EXISTS collections (
+            id INTEGER PRIMARY KEY, name TEXT NOT NULL, name_key TEXT NOT NULL UNIQUE
+        )''')
+        connection.execute('''CREATE TABLE IF NOT EXISTS collection_articles (
+            collection_id INTEGER NOT NULL REFERENCES collections(id),
+            article_id INTEGER NOT NULL REFERENCES articles(id),
+            PRIMARY KEY (collection_id, article_id)
+        )''')
+        connection.execute('CREATE INDEX IF NOT EXISTS memberships_by_article ON collection_articles(article_id)')

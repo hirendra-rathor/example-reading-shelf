@@ -25,3 +25,7 @@ a { color:var(--accent); text-decoration-thickness:1px; text-underline-offset:4p
 .empty { padding:48px 24px; border:1px dashed #b7c6bb; border-radius:12px; text-align:center; color:var(--muted); }footer { padding:15px 0 32px; color:var(--muted); font-size:.75rem; }
 @media(max-width:850px) { .capture { grid-template-columns:1fr; gap:18px; }.articles { grid-template-columns:1fr; } }
 @media(max-width:540px) { .wrap { width:calc(100% - 28px); }.masthead { padding:30px 0; }.capture form { grid-template-columns:1fr; }.capture,.article { padding:18px; }.edit-actions { align-items:stretch; flex-direction:column; }.buttons button { flex:1; }.article-heading { gap:10px; }.status-badge { font-size:.65rem; } }
+
+.organize { padding:20px; margin-bottom:20px; display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+.filters,#collection-form,.membership-form { display:flex; align-items:end; gap:12px; }.filters label { min-width:150px; }.membership-controls { border-top:1px solid var(--line); padding-top:16px; margin-top:10px; }.memberships { display:flex; flex-wrap:wrap; gap:7px; margin:10px 0; }.memberships button { font-size:.72rem; padding:5px 8px; }.membership-form label { flex:1; }
+@media(max-width:540px) { .filters,#collection-form { width:100%; flex-wrap:wrap; }.filters label,#collection-form label { min-width:0; flex:1; }#collection-form button { white-space:normal; } }

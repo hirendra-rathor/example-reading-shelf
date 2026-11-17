@@ -3,7 +3,7 @@ import sqlite3
 from pathlib import Path
 from flask import Flask, jsonify
 from werkzeug.exceptions import HTTPException
-from . import articles, db
+from . import articles, collections, db
 
 
 def create_app(instance_path: str | None = None) -> Flask:
@@ -13,6 +13,7 @@ def create_app(instance_path: str | None = None) -> Flask:
     with app.app_context():
         db.initialize()
     app.register_blueprint(articles.bp)
+    app.register_blueprint(collections.bp)
 
     @app.get('/')
     def index():
