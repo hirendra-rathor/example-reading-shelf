@@ -8,8 +8,9 @@ This folder records an independent **Claude Code** implementation of the Reading
 | --- | --- |
 | 1. Capture and track reading | [Milestone 1 chapter](milestone-1-capture-and-track-reading.md) |
 | 2. Organize the library | [Milestone 2 chapter](milestone-2-organize-the-library.md) |
+| 3. Archive and restore | [Milestone 3 chapter](milestone-3-archive-and-restore.md) |
 
-Later milestones are added to this table as they are recorded.
+All three milestones in the build guide are recorded.
 
 ## Starting point
 

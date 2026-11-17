@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1460 860" width="1460" height="860" role="img" aria-labelledby="title desc" font-family="Arial, Helvetica, sans-serif">
+<title id="title">Archive, restart, restore</title><desc id="desc">Collaboration view. The library page sends archive, list and restore requests to the Articles API, which calls the Library store. Archiving and restoring set and clear archived_at on Focaccia&#x27;s articles row; listings skip archived rows; the two membership rows are never changed. Green is new, blue is changed, gray is context.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#435970"/></marker><marker id="arrow-new" viewBox="0 0 10 10" refX="8.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#22a06b"/></marker><marker id="arrow-changed" viewBox="0 0 10 10" refX="8.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#3b82f6"/></marker><marker id="arrow-deleted" viewBox="0 0 10 10" refX="8.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#dc2626"/></marker><marker id="arrow-context" viewBox="0 0 10 10" refX="8.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#a3a3a3"/></marker></defs>
+<rect width="1460" height="860" fill="white"/>
+<text x="28" y="43" font-size="29" font-weight="700" fill="#182f46" text-anchor="start">Archive, restart, restore</text>
+<text x="28" y="75" font-size="17" font-weight="400" fill="#182f46" text-anchor="start">Follow Focaccia: archiving and restoring change one column; its row and both memberships stay put across the restart.</text>
+<rect x="1396" y="20" width="45" height="23" rx="4" fill="#22a06b"/>
+<text x="1418.5" y="36" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">new</text>
+<rect x="1313" y="20" width="75" height="23" rx="4" fill="#3b82f6"/>
+<text x="1350.5" y="36" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">changed</text>
+<rect x="1235" y="20" width="70" height="23" rx="4" fill="#a3a3a3"/>
+<text x="1270.0" y="36" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">context</text>
+<rect x="24" y="100" width="390" height="730" rx="9" fill="#f3f6f9" stroke="#a7b4c2" stroke-width="1.6" stroke-dasharray="6 5"/>
+<text x="40" y="124" font-size="13" font-weight="700" fill="#48617a" text-anchor="start">READER’S BROWSER</text>
+<rect x="44" y="150" width="350" height="150" rx="7" fill="#f9fbfd" stroke="#3b82f6" stroke-width="2.6"/>
+<rect x="309" y="139" width="75" height="23" rx="4" fill="#3b82f6"/>
+<text x="346.5" y="155" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">changed</text>
+<text x="56" y="174" font-size="12" font-weight="700" fill="#48617a" text-anchor="start">COMPONENT · app.js</text>
+<text x="56" y="200" font-size="19" font-weight="700" fill="#182f46" text-anchor="start">Library page</text>
+<text x="56" y="228" font-size="14.5" font-weight="400" fill="#586674" text-anchor="start">Today: library and collections.</text>
+<text x="56" y="248" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">Proposed: Archive button per</text>
+<text x="56" y="268" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">card; Archive view with Restore.</text>
+<text x="44" y="345" font-size="12" font-weight="700" fill="#48617a" text-anchor="start">REQUESTS IN THE SCENARIO</text>
+<text x="44" y="372.0" font-size="13.5" font-weight="700" fill="#192e42" text-anchor="start">① Weekend reading view</text>
+<text x="66" y="391.0" font-size="13.5" font-weight="400" fill="#192e42" text-anchor="start">POST /api/articles/1/archive</text>
+<text x="44" y="414.0" font-size="13.5" font-weight="700" fill="#192e42" text-anchor="start">② Food and cooking view</text>
+<text x="66" y="433.0" font-size="13.5" font-weight="400" fill="#192e42" text-anchor="start">GET /api/collections/1/articles → [ ]</text>
+<text x="44" y="456.0" font-size="13.5" font-weight="700" fill="#192e42" text-anchor="start">③ Archive view</text>
+<text x="66" y="475.0" font-size="13.5" font-weight="400" fill="#192e42" text-anchor="start">GET /api/archive → Focaccia, ids [1, 2]</text>
+<text x="44" y="498.0" font-size="13.5" font-weight="700" fill="#586674" text-anchor="start">— server restart —</text>
+<text x="44" y="526.0" font-size="13.5" font-weight="700" fill="#192e42" text-anchor="start">④ Archive view</text>
+<text x="66" y="545.0" font-size="13.5" font-weight="400" fill="#192e42" text-anchor="start">POST /api/articles/1/restore</text>
+<text x="44" y="568.0" font-size="13.5" font-weight="700" fill="#192e42" text-anchor="start">⑤ Both collections, Reading only</text>
+<text x="66" y="587.0" font-size="13.5" font-weight="400" fill="#192e42" text-anchor="start">GET /api/collections/{1,2}/articles?status=reading</text>
+<text x="44" y="660.0" font-size="13.5" font-weight="400" fill="#192e42" text-anchor="start">⑤ returns Focaccia in each collection with</text>
+<text x="44" y="678.5" font-size="13.5" font-weight="400" fill="#192e42" text-anchor="start">“Stopped at the shaping step.” and Reading;</text>
+<text x="44" y="697.0" font-size="13.5" font-weight="400" fill="#192e42" text-anchor="start">its title still links to the same URL.</text>
+<rect x="450" y="100" width="460" height="730" rx="9" fill="#f3f6f9" stroke="#a7b4c2" stroke-width="1.6" stroke-dasharray="6 5"/>
+<text x="466" y="124" font-size="13" font-weight="700" fill="#48617a" text-anchor="start">FLASK APP PROCESS</text>
+<rect x="470" y="150" width="280" height="140" rx="7" fill="#f9fbfd" stroke="#3b82f6" stroke-width="2.6"/>
+<rect x="665" y="139" width="75" height="23" rx="4" fill="#3b82f6"/>
+<text x="702.5" y="155" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">changed</text>
+<text x="482" y="174" font-size="12" font-weight="700" fill="#48617a" text-anchor="start">COMPONENT · api.py</text>
+<text x="482" y="200" font-size="19" font-weight="700" fill="#182f46" text-anchor="start">Articles API</text>
+<text x="482" y="228" font-size="14.5" font-weight="400" fill="#586674" text-anchor="start">Today: no archive routes.</text>
+<text x="482" y="248" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">Proposed: archive, restore,</text>
+<text x="482" y="268" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">GET /api/archive.</text>
+<rect x="470" y="420" width="280" height="150" rx="7" fill="#f9fbfd" stroke="#3b82f6" stroke-width="2.6"/>
+<rect x="665" y="409" width="75" height="23" rx="4" fill="#3b82f6"/>
+<text x="702.5" y="425" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">changed</text>
+<text x="482" y="444" font-size="12" font-weight="700" fill="#48617a" text-anchor="start">COMPONENT · library.py</text>
+<text x="482" y="470" font-size="19" font-weight="700" fill="#182f46" text-anchor="start">Library store</text>
+<text x="482" y="498" font-size="14.5" font-weight="400" fill="#586674" text-anchor="start">Today: lists every article.</text>
+<text x="482" y="518" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">Proposed: listings skip</text>
+<text x="482" y="538" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">archived rows; edits to an</text>
+<text x="482" y="558" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">archived article → 409.</text>
+<rect x="940" y="100" width="496" height="730" rx="9" fill="#f3f6f9" stroke="#a7b4c2" stroke-width="1.6" stroke-dasharray="6 5"/>
+<text x="956" y="124" font-size="13" font-weight="700" fill="#48617a" text-anchor="start">reading-shelf.sqlite3  ·  schema v3</text>
+<rect x="960" y="150" width="456" height="250" rx="7" fill="#f9fbfd" stroke="#a3a3a3" stroke-width="2.6"/>
+<rect x="1336" y="139" width="70" height="23" rx="4" fill="#a3a3a3"/>
+<text x="1371.0" y="155" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">context</text>
+<text x="972" y="174" font-size="12" font-weight="700" fill="#48617a" text-anchor="start">STATE ELEMENT</text>
+<text x="972" y="200" font-size="19" font-weight="700" fill="#182f46" text-anchor="start">articles row 1</text>
+<text x="972" y="228" font-size="14.5" font-weight="700" fill="#48617a" text-anchor="start">url</text>
+<text x="1052" y="228" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">https://en.wikipedia.org/wiki/Focaccia</text>
+<text x="972" y="248" font-size="14.5" font-weight="700" fill="#48617a" text-anchor="start">title</text>
+<text x="1052" y="248" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">Focaccia</text>
+<text x="972" y="268" font-size="14.5" font-weight="700" fill="#48617a" text-anchor="start">note</text>
+<text x="1052" y="268" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">Stopped at the shaping step.</text>
+<text x="972" y="288" font-size="14.5" font-weight="700" fill="#48617a" text-anchor="start">status</text>
+<text x="1052" y="288" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">reading</text>
+<text x="972" y="308" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start"></text>
+<text x="972" y="328" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">Unchanged by ① and ④.</text>
+<rect x="960" y="430" width="456" height="140" rx="7" fill="#f9fbfd" stroke="#22a06b" stroke-width="2.6"/>
+<rect x="1361" y="419" width="45" height="23" rx="4" fill="#22a06b"/>
+<text x="1383.5" y="435" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">new</text>
+<text x="972" y="454" font-size="12" font-weight="700" fill="#48617a" text-anchor="start">STATE ELEMENT · new column</text>
+<text x="972" y="480" font-size="19" font-weight="700" fill="#182f46" text-anchor="start">archived_at</text>
+<text x="972" y="508" font-size="14.5" font-weight="700" fill="#48617a" text-anchor="start">before ①</text>
+<text x="1052" y="508" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">NULL</text>
+<text x="972" y="528" font-size="14.5" font-weight="700" fill="#48617a" text-anchor="start">after ①</text>
+<text x="1052" y="528" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">2026-11-17T20:05:00Z</text>
+<text x="972" y="548" font-size="14.5" font-weight="700" fill="#48617a" text-anchor="start">after ④</text>
+<text x="1052" y="548" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">NULL</text>
+<rect x="960" y="600" width="456" height="170" rx="7" fill="#f9fbfd" stroke="#a3a3a3" stroke-width="2.6"/>
+<rect x="1336" y="589" width="70" height="23" rx="4" fill="#a3a3a3"/>
+<text x="1371.0" y="605" font-size="13" font-weight="700" fill="#0a1d28" text-anchor="middle">context</text>
+<text x="972" y="624" font-size="12" font-weight="700" fill="#48617a" text-anchor="start">STATE ELEMENT · collection_articles</text>
+<text x="972" y="650" font-size="19" font-weight="700" fill="#182f46" text-anchor="start">memberships</text>
+<text x="972" y="678" font-size="14.5" font-weight="700" fill="#48617a" text-anchor="start">(1, 1)</text>
+<text x="1052" y="678" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">Food and cooking → Focaccia</text>
+<text x="972" y="698" font-size="14.5" font-weight="700" fill="#48617a" text-anchor="start">(2, 1)</text>
+<text x="1052" y="698" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">Weekend reading → Focaccia</text>
+<text x="972" y="718" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start"></text>
+<text x="972" y="738" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">Never deleted by archiving, so</text>
+<text x="972" y="758" font-size="14.5" font-weight="400" fill="#192e42" text-anchor="start">restoring needs no copy.</text>
+<path d="M396 205 L468 205" fill="none" stroke="#435970" stroke-width="1.8" marker-end="url(#arrow)"/>
+<path d="M468 250 L398 250" fill="none" stroke="#435970" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+<path d="M610 290 L610 418" fill="none" stroke="#435970" stroke-width="1.8" marker-end="url(#arrow)"/>
+<path d="M752 480 L958 480" fill="none" stroke="#435970" stroke-width="1.8" marker-end="url(#arrow)"/>
+<path d="M752 540 L925 540 L925 300 L958 300" fill="none" stroke="#435970" stroke-width="1.8" marker-end="url(#arrow)"/>
+<path d="M752 555 L912 555 L912 680 L958 680" fill="none" stroke="#435970" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="408" y="197" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">①–⑤</text>
+<text x="408" y="272" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">JSON</text>
+<text x="620" y="345" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">archive · restore ·</text>
+<text x="620" y="362" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">list</text>
+<text x="760" y="473" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">① set · ④ clear</text>
+<text x="760" y="508" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">②⑤ skip archived rows</text>
+<text x="760" y="525" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">③ archived rows only</text>
+<text x="760" y="574" font-size="13.5" font-weight="700" fill="#182f46" text-anchor="start" paint-order="stroke" stroke="white" stroke-width="4" stroke-linejoin="round">②⑤ join</text>
+</svg>

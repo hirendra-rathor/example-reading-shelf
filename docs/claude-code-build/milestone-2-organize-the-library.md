@@ -237,4 +237,4 @@ Rehearsal step 8: All articles still lists Focaccia, now filed only in Weekend r
 
 ## Navigation
 
-Previous: [Milestone 1: Capture and track reading](milestone-1-capture-and-track-reading.md) · [Recording index](README.md) · [Build prompts](../build-prompts.md)
+Previous: [Milestone 1: Capture and track reading](milestone-1-capture-and-track-reading.md) · Next: [Milestone 3: Archive and restore](milestone-3-archive-and-restore.md) · [Recording index](README.md) · [Build prompts](../build-prompts.md)
