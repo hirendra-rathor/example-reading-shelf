@@ -7,5 +7,6 @@ Recorded checks describe the build session. Descriptions and navigation have bee
 | Milestone | Reading and evidence |
 | --- | --- |
 | 1 · Capture and track reading | [Proposal, implementation, and screenshots](01-capture.md) |
+| 2 · Organize the library | [Shared edits, memberships, and filtering](02-collections.md) |
 
 [Build prompts](../build-prompts.md) · [Run the application](../../README.md#run-the-example-locally)
