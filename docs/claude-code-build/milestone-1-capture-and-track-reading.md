@@ -202,4 +202,4 @@ Rehearsal step 5: after stopping and restarting the server, the reloaded page sh
 
 ## Navigation
 
-[Recording index](README.md) · [Build prompts](../build-prompts.md) · [Project README](../../README.md)
+Next: [Milestone 2: Organize the library](milestone-2-organize-the-library.md) · [Recording index](README.md) · [Build prompts](../build-prompts.md) · [Project README](../../README.md)
