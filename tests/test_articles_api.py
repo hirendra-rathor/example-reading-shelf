@@ -88,5 +88,5 @@ def test_schema_is_versioned_and_created_only_once(client, restart, instance_pat
 
     database_path = Path(instance_path) / "reading-shelf.sqlite3"
     with closing(sqlite3.connect(database_path)) as database:
-        assert database.execute("PRAGMA user_version").fetchone()[0] == 1
+        assert database.execute("PRAGMA user_version").fetchone()[0] == 2
         assert database.execute("SELECT COUNT(*) FROM articles").fetchone()[0] == 1

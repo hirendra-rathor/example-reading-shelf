@@ -27,6 +27,10 @@ def json_object() -> dict:
     return body
 
 
+def status_filter() -> str | None:
+    return library.clean_status_filter(request.args.get("status"))
+
+
 @bp.errorhandler(library.InvalidInput)
 def invalid_input(error):
     return jsonify(error=str(error)), 400
@@ -42,9 +46,17 @@ def duplicate_link(error):
     return jsonify(error=str(error), article=error.article), 409
 
 
+@bp.errorhandler(library.DuplicateCollection)
+def duplicate_collection(error):
+    return jsonify(error=str(error), collection=error.collection), 409
+
+
+# ------------------------------------------------------------------ articles
+
+
 @bp.get("/articles")
 def list_articles():
-    return jsonify(articles=get_library().list_articles())
+    return jsonify(articles=get_library().list_articles(status=status_filter()))
 
 
 @bp.post("/articles")
@@ -62,3 +74,40 @@ def get_article(article_id):
 @bp.patch("/articles/<int:article_id>")
 def update_article(article_id):
     return jsonify(get_library().update_article(article_id, json_object()))
+
+
+# --------------------------------------------------------------- collections
+
+
+@bp.get("/collections")
+def list_collections():
+    return jsonify(collections=get_library().list_collections())
+
+
+@bp.post("/collections")
+def create_collection():
+    collection = get_library().create_collection(json_object().get("name"))
+    return jsonify(collection), 201
+
+
+@bp.get("/collections/<int:collection_id>")
+def get_collection(collection_id):
+    return jsonify(get_library().get_collection(collection_id))
+
+
+@bp.get("/collections/<int:collection_id>/articles")
+def list_collection_articles(collection_id):
+    shelf = get_library()
+    status = status_filter()
+    articles = shelf.list_collection_articles(collection_id, status=status)
+    return jsonify(collection=shelf.get_collection(collection_id), articles=articles)
+
+
+@bp.put("/collections/<int:collection_id>/articles/<int:article_id>")
+def add_to_collection(collection_id, article_id):
+    return jsonify(get_library().add_to_collection(collection_id, article_id))
+
+
+@bp.delete("/collections/<int:collection_id>/articles/<int:article_id>")
+def remove_from_collection(collection_id, article_id):
+    return jsonify(get_library().remove_from_collection(collection_id, article_id))

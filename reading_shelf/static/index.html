@@ -15,26 +15,50 @@
   </header>
 
   <main class="layout">
-    <section class="panel add-panel" aria-labelledby="add-heading">
-      <h2 id="add-heading">Add an article</h2>
-      <form id="add-form" novalidate>
-        <label for="add-title">Title</label>
-        <input id="add-title" name="title" type="text" autocomplete="off" maxlength="300" required>
-        <label for="add-url">Link</label>
-        <input id="add-url" name="url" type="url" inputmode="url" autocomplete="off" placeholder="https://" required>
-        <button type="submit" class="primary">Save article</button>
-        <p id="add-message" class="message" role="status" aria-live="polite"></p>
-      </form>
-    </section>
+    <aside class="sidebar">
+      <section class="panel add-panel" aria-labelledby="add-heading">
+        <h2 id="add-heading">Add an article</h2>
+        <form id="add-form" novalidate>
+          <label for="add-title">Title</label>
+          <input id="add-title" name="title" type="text" autocomplete="off" maxlength="300" required>
+          <label for="add-url">Link</label>
+          <input id="add-url" name="url" type="url" inputmode="url" autocomplete="off" placeholder="https://" required>
+          <button type="submit" class="primary">Save article</button>
+          <p id="add-message" class="message" role="status" aria-live="polite"></p>
+        </form>
+      </section>
 
-    <section class="panel library-panel" aria-labelledby="library-heading">
+      <nav class="panel collections-panel" aria-labelledby="collections-heading">
+        <h2 id="collections-heading">Collections</h2>
+        <ul id="view-list" class="view-list"></ul>
+        <form id="collection-form" class="collection-form" novalidate>
+          <label for="collection-name">New collection</label>
+          <div class="inline-field">
+            <input id="collection-name" name="name" type="text" autocomplete="off" maxlength="80" placeholder="e.g. Weekend reading">
+            <button type="submit">Create</button>
+          </div>
+          <p id="collection-message" class="message" role="status" aria-live="polite"></p>
+        </form>
+      </nav>
+    </aside>
+
+    <section class="panel library-panel" aria-labelledby="view-heading">
       <div class="library-header">
-        <h2 id="library-heading">In the library</h2>
+        <div>
+          <p class="view-kind" id="view-kind">Library</p>
+          <h2 id="view-heading" class="view-heading">All articles</h2>
+        </div>
         <p id="library-count" class="count"></p>
+      </div>
+      <div class="status-filter" role="group" aria-label="Show articles by reading status">
+        <button type="button" data-filter="">All</button>
+        <button type="button" data-filter="to_read">To read</button>
+        <button type="button" data-filter="reading">Reading</button>
+        <button type="button" data-filter="read">Read</button>
       </div>
       <p id="library-message" class="message" role="status" aria-live="polite"></p>
       <ol id="article-list" class="article-list"></ol>
-      <p id="empty-library" class="empty" hidden>Nothing saved yet. Add an article to start your library.</p>
+      <p id="empty-library" class="empty" hidden></p>
     </section>
   </main>
 
@@ -57,6 +81,11 @@
           <button type="button" class="save-note">Save note</button>
           <span class="note-message message" role="status" aria-live="polite"></span>
         </div>
+      </div>
+      <div class="memberships">
+        <span class="memberships-label">Collections</span>
+        <ul class="chips"></ul>
+        <select class="add-to-collection" aria-label="Add to a collection"></select>
       </div>
     </li>
   </template>
