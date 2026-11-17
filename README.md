@@ -14,6 +14,8 @@ Reading Shelf uses a personal reading library as an example scenario for applyin
 
 ![A reader saves a link to Wikipedia’s Focaccia article, adds a note, and marks it as Reading. A developer and coding assistant build the app with input from an architect, a security engineer, and a maintainer.](docs/assets/reading-shelf-brief.svg)
 
+This is the **Claude Code** implementation on `claude`. Read the [recorded Claude Code build](docs/claude-code-build/README.md), or explore the [Codex implementation](https://github.com/hirendra-rathor/example-reading-shelf/tree/codex), available on `main` and `codex` branches.
+
 ## Work through the example
 
 Install the skills by following the instructions in the [Continuous Assurance repository](https://github.com/hirendra-rathor/continuous-assurance).
@@ -24,9 +26,11 @@ Give your coding assistant one prompt at a time. Review the proposal, ask for an
 
 ## Run the example locally
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and then start the example from the repository root.
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then clone and start the example from the repository root.
 
 ```sh
+git clone --branch claude https://github.com/hirendra-rathor/example-reading-shelf.git reading-shelf-claude
+cd reading-shelf-claude
 uv run --locked flask --app reading_shelf run --port 5050
 ```
 
