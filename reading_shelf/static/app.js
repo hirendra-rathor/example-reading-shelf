@@ -1,16 +1,18 @@
 "use strict";
 
-// Reading Shelf page script: renders the library or one collection, optionally narrowed to
-// one reading status, and sends saves and edits to the JSON API. Collections reference the
-// same article, so every view reads note and status from the API rather than keeping copies.
+// Reading Shelf page script: renders the library, one collection, or the archive, optionally
+// narrowed to one reading status, and sends saves and edits to the JSON API. Collections
+// reference the same article, so every view reads note and status from the API rather than
+// keeping copies. Archived articles are shown read-only with a Restore button.
 // Reader-supplied text is always assigned with textContent or value, never parsed as HTML.
 
 const STATUS_LABELS = { to_read: "To read", reading: "Reading", read: "Read" };
 
 const state = {
-  view: { collectionId: null, status: null },
+  view: { archive: false, collectionId: null, status: null },
   collection: null,
   collections: [],
+  archiveCount: 0,
   articles: [],
 };
 
@@ -54,6 +56,18 @@ function showMessage(element, text, tone = "") {
   element.classList.toggle("ok", tone === "ok");
 }
 
+function listNames(names) {
+  if (names.length < 2) return names.join("");
+  return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+}
+
+function formatDate(timestamp) {
+  const date = new Date(timestamp);
+  return Number.isNaN(date.getTime())
+    ? timestamp
+    : date.toLocaleString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+}
+
 function hostOf(url) {
   try {
     return new URL(url).hostname;
@@ -68,15 +82,18 @@ function readViewFromLocation() {
   const params = new URLSearchParams(window.location.hash.slice(1));
   const collectionId = Number.parseInt(params.get("collection") || "", 10);
   const status = params.get("status");
+  const archive = params.get("view") === "archive";
   return {
-    collectionId: Number.isInteger(collectionId) && collectionId > 0 ? collectionId : null,
+    archive,
+    collectionId: !archive && Number.isInteger(collectionId) && collectionId > 0 ? collectionId : null,
     status: status in STATUS_LABELS ? status : null,
   };
 }
 
-function viewHash({ collectionId, status }) {
+function viewHash({ archive = false, collectionId = null, status = null }) {
   const params = new URLSearchParams();
-  if (collectionId) params.set("collection", String(collectionId));
+  if (archive) params.set("view", "archive");
+  else if (collectionId) params.set("collection", String(collectionId));
   if (status) params.set("status", status);
   const text = params.toString();
   return text ? `#${text}` : "#";
@@ -97,28 +114,38 @@ function collectionName(collectionId) {
 }
 
 function inView(article) {
-  const { collectionId, status } = state.view;
+  const { archive, collectionId, status } = state.view;
+  if (Boolean(article.archived_at) !== archive) return false;
   if (status && article.status !== status) return false;
   if (collectionId && !article.collection_ids.includes(collectionId)) return false;
   return true;
 }
 
 async function loadCollections() {
-  const data = await api("/api/collections");
-  state.collections = data.collections;
+  const [collections, archived] = await Promise.all([api("/api/collections"), api("/api/archive")]);
+  state.collections = collections.collections;
+  state.archiveCount = archived.articles.length;
   renderViewList();
+}
+
+function listingPath({ archive, collectionId, status }) {
+  const query = status ? `?status=${status}` : "";
+  if (archive) return `/api/archive${query}`;
+  if (collectionId) return `/api/collections/${collectionId}/articles${query}`;
+  return `/api/articles${query}`;
 }
 
 async function loadView() {
   state.view = readViewFromLocation();
   const { collectionId, status } = state.view;
-  const query = status ? `?status=${status}` : "";
   try {
-    const [collections, listing] = await Promise.all([
+    const [collections, archived, listing] = await Promise.all([
       api("/api/collections"),
-      collectionId ? api(`/api/collections/${collectionId}/articles${query}`) : api(`/api/articles${query}`),
+      api("/api/archive"),
+      api(listingPath(state.view)),
     ]);
     state.collections = collections.collections;
+    state.archiveCount = archived.articles.length;
     state.collection = collectionId ? listing.collection : null;
     state.articles = listing.articles;
     showMessage(elements.libraryMessage, "");
@@ -137,16 +164,18 @@ async function loadView() {
 // --------------------------------------------------------------- rendering
 
 function renderViewList() {
-  const { collectionId, status } = state.view;
-  const entries = [{ id: null, name: "All articles", count: null }].concat(
-    state.collections.map((collection) => ({ id: collection.id, name: collection.name, count: collection.article_count })),
-  );
+  const { archive, collectionId, status } = state.view;
+  const entries = [{ id: null, name: "All articles", count: null }]
+    .concat(state.collections.map((collection) => ({ id: collection.id, name: collection.name, count: collection.article_count })))
+    .concat([{ archive: true, name: "Archive", count: state.archiveCount }]);
   const items = entries.map((entry) => {
     const item = document.createElement("li");
+    if (entry.archive) item.className = "archive-entry";
     const link = document.createElement("a");
-    link.href = viewHash({ collectionId: entry.id, status });
+    link.href = viewHash({ archive: Boolean(entry.archive), collectionId: entry.id, status });
     link.className = "view-link";
-    if (entry.id === collectionId) link.setAttribute("aria-current", "page");
+    const current = entry.archive ? archive : !archive && entry.id === collectionId;
+    if (current) link.setAttribute("aria-current", "page");
     const name = document.createElement("span");
     name.textContent = entry.name;
     link.append(name);
@@ -225,11 +254,35 @@ function renderArticle(article) {
     const collectionId = Number.parseInt(event.target.value, 10);
     if (collectionId) addToCollection(article.id, collectionId, item);
   });
+  item.querySelector(".archive-button").addEventListener("click", () => archiveArticle(article.id, item));
+  return item;
+}
+
+function returnsTo(article) {
+  const names = article.collection_ids.map(collectionName);
+  return names.length ? `Your library, ${listNames(names)}` : "Your library";
+}
+
+function renderArchivedArticle(article) {
+  const item = elements.archivedTemplate.content.firstElementChild.cloneNode(true);
+  item.dataset.id = String(article.id);
+  const link = item.querySelector(".article-title");
+  link.href = article.url;
+  link.querySelector(".title-text").textContent = article.title;
+  item.querySelector(".article-host").textContent = hostOf(article.url);
+  item.querySelector(".archived-status").textContent = STATUS_LABELS[article.status];
+  item.querySelector(".archived-note").textContent = article.note || "No note";
+  item.querySelector(".archived-returns").textContent = returnsTo(article);
+  item.querySelector(".archived-when").textContent = formatDate(article.archived_at);
+  item.querySelector(".restore-button").addEventListener("click", () => restoreArticle(article.id, item));
   return item;
 }
 
 function emptyMessage() {
-  const { collectionId, status } = state.view;
+  const { archive, collectionId, status } = state.view;
+  if (archive) {
+    return status ? `No archived articles marked ${STATUS_LABELS[status]}.` : "The archive is empty. Archive an article to put it aside.";
+  }
   const where = collectionId ? `in ${collectionName(collectionId)}` : "in your library";
   if (status) return `No articles marked ${STATUS_LABELS[status]} ${where}.`;
   if (collectionId) return `Nothing in ${collectionName(collectionId)} yet. Use “Add to collection…” on any article.`;
@@ -245,14 +298,14 @@ function renderSummary() {
 }
 
 function render() {
-  const { collectionId, status } = state.view;
-  elements.viewKind.textContent = collectionId ? "Collection" : "Library";
-  elements.viewHeading.textContent = collectionId ? state.collection.name : "All articles";
+  const { archive, collectionId, status } = state.view;
+  elements.viewKind.textContent = archive ? "Put aside" : collectionId ? "Collection" : "Library";
+  elements.viewHeading.textContent = archive ? "Archive" : collectionId ? state.collection.name : "All articles";
   for (const button of elements.filterButtons) {
     button.setAttribute("aria-pressed", String((button.dataset.filter || null) === status));
   }
   renderViewList();
-  elements.list.replaceChildren(...state.articles.map(renderArticle));
+  elements.list.replaceChildren(...state.articles.map(archive ? renderArchivedArticle : renderArticle));
   renderSummary();
 }
 
@@ -301,7 +354,16 @@ async function addArticle(event) {
     }
     elements.title.focus();
   } catch (error) {
-    if (error.status === 409 && error.body && error.body.article) {
+    if (error.status === 409 && error.body && error.body.article && error.body.article.archived_at) {
+      const archived = error.body.article;
+      showMessage(elements.addMessage, error.message, "error");
+      const restore = document.createElement("button");
+      restore.type = "button";
+      restore.className = "inline-action";
+      restore.textContent = "Restore it";
+      restore.addEventListener("click", () => restoreFromForm(archived.id));
+      elements.addMessage.append(restore);
+    } else if (error.status === 409 && error.body && error.body.article) {
       showMessage(elements.addMessage, `Already in your library as “${error.body.article.title}”.`, "error");
       highlight(error.body.article.id);
     } else {
@@ -392,6 +454,54 @@ async function removeFromCollection(articleId, collectionId, item) {
   }
 }
 
+function restoredMessage(article) {
+  const names = article.collection_ids.map(collectionName);
+  const where = names.length ? `your library and to ${listNames(names)}` : "your library";
+  return `Restored “${article.title}” to ${where}.`;
+}
+
+async function archiveArticle(articleId, item) {
+  const message = item.querySelector(".note-message");
+  try {
+    const archived = await api(`/api/articles/${articleId}/archive`, { method: "POST" });
+    await loadCollections();
+    applyUpdate(archived, item, `Archived “${archived.title}”. It’s in the Archive until you restore it.`);
+  } catch (error) {
+    showMessage(message, error.message, "error");
+  }
+}
+
+async function restoreArticle(articleId, item) {
+  const message = item.querySelector(".restore-message");
+  try {
+    const restored = await api(`/api/articles/${articleId}/restore`, { method: "POST" });
+    await loadCollections();
+    applyUpdate(restored, item, restoredMessage(restored));
+  } catch (error) {
+    showMessage(message, error.message, "error");
+  }
+}
+
+async function restoreFromForm(articleId) {
+  try {
+    const restored = await api(`/api/articles/${articleId}/restore`, { method: "POST" });
+    elements.form.reset();
+    await loadCollections();
+    showMessage(elements.addMessage, restoredMessage(restored), "ok");
+    if (state.view.archive) {
+      const item = elements.list.querySelector(`[data-id="${articleId}"]`);
+      if (item) applyUpdate(restored, item, "");
+    } else if (inView(restored)) {
+      state.articles = [restored, ...state.articles];
+      elements.list.prepend(renderArticle(restored));
+      renderSummary();
+      highlight(restored.id);
+    }
+  } catch (error) {
+    showMessage(elements.addMessage, error.message, "error");
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   elements.form = document.getElementById("add-form");
   elements.title = document.getElementById("add-title");
@@ -409,11 +519,12 @@ document.addEventListener("DOMContentLoaded", () => {
   elements.count = document.getElementById("library-count");
   elements.libraryMessage = document.getElementById("library-message");
   elements.template = document.getElementById("article-template");
+  elements.archivedTemplate = document.getElementById("archived-template");
 
   elements.form.addEventListener("submit", addArticle);
   elements.collectionForm.addEventListener("submit", createCollection);
   for (const button of elements.filterButtons) {
-    button.addEventListener("click", () => goTo({ collectionId: state.view.collectionId, status: button.dataset.filter || null }));
+    button.addEventListener("click", () => goTo({ ...state.view, status: button.dataset.filter || null }));
   }
   window.addEventListener("hashchange", loadView);
   loadView();

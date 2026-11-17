@@ -195,6 +195,21 @@ button.primary {
 }
 .add-to-collection:disabled { opacity: 0.6; }
 
+/* Archive */
+.article-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.archive-button { font-size: 0.85rem; padding: 0.25rem 0.75rem; color: var(--muted); }
+.archive-button:hover { color: var(--ink); }
+.view-list .archive-entry { margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px dashed var(--line); }
+.article.archived { background: #fcfbf7; }
+.primary-outline { border-color: var(--accent); color: var(--accent); font-weight: 700; }
+.primary-outline:hover { background: var(--accent-soft); }
+.archived-details { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1rem; margin: 0; font-size: 0.95rem; }
+.archived-details dt { font-weight: 600; color: var(--muted); }
+.archived-details dd { margin: 0; white-space: pre-wrap; }
+.archived-status { font-weight: 700; color: var(--accent); }
+.restore-message { margin: 0; }
+.inline-action { margin-left: 0.5rem; font-size: 0.85rem; padding: 0.15rem 0.6rem; }
+
 @media (max-width: 760px) {
   .layout { grid-template-columns: 1fr; }
   h1 { font-size: 2.1rem; }

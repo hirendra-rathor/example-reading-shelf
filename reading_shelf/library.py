@@ -4,6 +4,11 @@ The library store owns the rules for what an article and a collection may contai
 and is the only code that reads or writes the library tables. A collection holds
 references to articles, never copies: an article's note and status live on its one
 ``articles`` row, whichever view it is read or edited from.
+
+Archiving only sets ``archived_at`` on that row. The article keeps its link, note,
+status and memberships, so restoring (clearing ``archived_at``) brings all of them
+back. Listings and counts skip archived articles, and an archived article can't be
+changed until it is restored.
 """
 
 import sqlite3
@@ -12,7 +17,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 
 STATUSES = ("to_read", "reading", "read")
 DEFAULT_STATUS = "to_read"
@@ -52,14 +57,16 @@ CREATE TABLE IF NOT EXISTS collection_articles (
 )
 """
 
-# Statements that bring a library up to each schema version, applied in order.
+# Statements that bring a library from the previous schema version to each version.
+# Only the steps above a file's current version run, so a step need not be repeatable.
 MIGRATIONS = {
     1: [ARTICLES_TABLE],
     2: [COLLECTIONS_TABLE, MEMBERSHIPS_TABLE],
+    3: ["ALTER TABLE articles ADD COLUMN archived_at TEXT"],
 }
 
 ARTICLE_COLUMNS = """
-    a.id, a.url, a.title, a.note, a.status, a.saved_at,
+    a.id, a.url, a.title, a.note, a.status, a.saved_at, a.archived_at,
     (SELECT group_concat(m.collection_id) FROM collection_articles AS m
      WHERE m.article_id = a.id) AS collection_ids
 """
@@ -81,7 +88,19 @@ class DuplicateLink(LibraryError):
     """The link is already saved; ``article`` is the existing article."""
 
     def __init__(self, article: dict):
-        super().__init__("That link is already in your library.")
+        if article["archived_at"]:
+            message = f"That link is in your archive as “{article['title']}”."
+        else:
+            message = "That link is already in your library."
+        super().__init__(message)
+        self.article = article
+
+
+class ArchivedArticle(LibraryError):
+    """The article is archived and can't change until it is restored."""
+
+    def __init__(self, article: dict):
+        super().__init__("Restore this article to change it.")
         self.article = article
 
 
@@ -120,8 +139,9 @@ def transaction(connection: sqlite3.Connection):
 def initialize(path: str | Path) -> None:
     """Create or upgrade the library schema; keep any existing data.
 
-    The upgrade runs in one transaction, so a failure leaves the file at its
-    previous version. A file from a newer Reading Shelf is refused unchanged.
+    Only the migration steps above the file's version run, all in one
+    transaction, so a failure leaves the file at its previous version. A file
+    from a newer Reading Shelf is refused unchanged.
     """
     with closing(connect(path)) as connection:
         # Reading the version first makes an unreadable file fail at startup.
@@ -131,14 +151,13 @@ def initialize(path: str | Path) -> None:
                 f"This library uses schema version {version}, but this Reading Shelf "
                 f"understands up to version {SCHEMA_VERSION}."
             )
+        if version == SCHEMA_VERSION:
+            return
         with transaction(connection):
-            for target in sorted(MIGRATIONS):
-                # Re-running CREATE TABLE IF NOT EXISTS keeps a file whose version
-                # was set but whose tables are missing usable.
+            for target in sorted(step for step in MIGRATIONS if step > version):
                 for statement in MIGRATIONS[target]:
                     connection.execute(statement)
-            if version < SCHEMA_VERSION:
-                connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
+            connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
 
 
 def clean_url(value) -> str:
@@ -213,6 +232,7 @@ def _article(row: sqlite3.Row) -> dict:
         "note": row["note"],
         "status": row["status"],
         "saved_at": row["saved_at"],
+        "archived_at": row["archived_at"],
         "collection_ids": sorted(int(value) for value in collection_ids.split(",")) if collection_ids else [],
     }
 
@@ -237,13 +257,30 @@ class Library:
     # ----------------------------------------------------------- articles
 
     def list_articles(self, status: str | None = None) -> list[dict]:
-        query = f"SELECT {ARTICLE_COLUMNS} FROM articles AS a"
+        """Articles in the library (not archived), newest first."""
+        query = f"SELECT {ARTICLE_COLUMNS} FROM articles AS a WHERE a.archived_at IS NULL"
         parameters = []
         if status is not None:
-            query += " WHERE a.status = ?"
+            query += " AND a.status = ?"
             parameters.append(status)
         query += " ORDER BY a.saved_at DESC, a.id DESC"
         return [_article(row) for row in self.connection.execute(query, parameters)]
+
+    def list_archive(self, status: str | None = None) -> list[dict]:
+        """Archived articles, most recently archived first."""
+        query = f"SELECT {ARTICLE_COLUMNS} FROM articles AS a WHERE a.archived_at IS NOT NULL"
+        parameters = []
+        if status is not None:
+            query += " AND a.status = ?"
+            parameters.append(status)
+        query += " ORDER BY a.archived_at DESC, a.id DESC"
+        return [_article(row) for row in self.connection.execute(query, parameters)]
+
+    def _active_article(self, article_id: int) -> dict:
+        article = self.get_article(article_id)
+        if article["archived_at"]:
+            raise ArchivedArticle(article)
+        return article
 
     def get_article(self, article_id: int) -> dict:
         row = self.connection.execute(
@@ -289,12 +326,28 @@ class Library:
             values["status"] = clean_status(changes["status"])
         assignments = ", ".join(f"{field} = ?" for field in values)
         with transaction(self.connection):
-            cursor = self.connection.execute(
+            self._active_article(article_id)
+            self.connection.execute(
                 f"UPDATE articles SET {assignments} WHERE id = ?",
                 (*values.values(), article_id),
             )
-            if cursor.rowcount == 0:
-                raise NotFound("That article isn’t in your library.")
+        return self.get_article(article_id)
+
+    def archive_article(self, article_id: int) -> dict:
+        """Set the archive mark. Archiving again keeps the first time."""
+        with transaction(self.connection):
+            self.get_article(article_id)
+            self.connection.execute(
+                "UPDATE articles SET archived_at = ? WHERE id = ? AND archived_at IS NULL",
+                (_now(), article_id),
+            )
+        return self.get_article(article_id)
+
+    def restore_article(self, article_id: int) -> dict:
+        """Clear the archive mark. Link, note, status and memberships were never touched."""
+        with transaction(self.connection):
+            self.get_article(article_id)
+            self.connection.execute("UPDATE articles SET archived_at = NULL WHERE id = ?", (article_id,))
         return self.get_article(article_id)
 
     # -------------------------------------------------------- collections
@@ -302,9 +355,10 @@ class Library:
     def list_collections(self) -> list[dict]:
         rows = self.connection.execute(
             """
-            SELECT c.id, c.name, c.created_at, COUNT(m.article_id) AS article_count
+            SELECT c.id, c.name, c.created_at, COUNT(a.id) AS article_count
             FROM collections AS c
             LEFT JOIN collection_articles AS m ON m.collection_id = c.id
+            LEFT JOIN articles AS a ON a.id = m.article_id AND a.archived_at IS NULL
             GROUP BY c.id
             ORDER BY c.name_key, c.id
             """
@@ -315,7 +369,9 @@ class Library:
         row = self.connection.execute(
             """
             SELECT c.id, c.name, c.created_at,
-                   (SELECT COUNT(*) FROM collection_articles AS m WHERE m.collection_id = c.id) AS article_count
+                   (SELECT COUNT(*) FROM collection_articles AS m
+                    JOIN articles AS a ON a.id = m.article_id
+                    WHERE m.collection_id = c.id AND a.archived_at IS NULL) AS article_count
             FROM collections AS c WHERE c.id = ?
             """,
             (collection_id,),
@@ -348,7 +404,7 @@ class Library:
         query = (
             f"SELECT {ARTICLE_COLUMNS} FROM articles AS a "
             "JOIN collection_articles AS member ON member.article_id = a.id "
-            "WHERE member.collection_id = ?"
+            "WHERE member.collection_id = ? AND a.archived_at IS NULL"
         )
         parameters = [collection_id]
         if status is not None:
@@ -361,7 +417,7 @@ class Library:
         """Put an article in a collection. Adding it again changes nothing."""
         with transaction(self.connection):
             self.get_collection(collection_id)
-            self.get_article(article_id)
+            self._active_article(article_id)
             self.connection.execute(
                 "INSERT OR IGNORE INTO collection_articles (collection_id, article_id, added_at) VALUES (?, ?, ?)",
                 (collection_id, article_id, _now()),
@@ -372,7 +428,7 @@ class Library:
         """Take an article out of one collection only. Removing it again changes nothing."""
         with transaction(self.connection):
             self.get_collection(collection_id)
-            self.get_article(article_id)
+            self._active_article(article_id)
             self.connection.execute(
                 "DELETE FROM collection_articles WHERE collection_id = ? AND article_id = ?",
                 (collection_id, article_id),

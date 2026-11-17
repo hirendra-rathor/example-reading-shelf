@@ -46,6 +46,11 @@ def duplicate_link(error):
     return jsonify(error=str(error), article=error.article), 409
 
 
+@bp.errorhandler(library.ArchivedArticle)
+def archived_article(error):
+    return jsonify(error=str(error), article=error.article), 409
+
+
 @bp.errorhandler(library.DuplicateCollection)
 def duplicate_collection(error):
     return jsonify(error=str(error), collection=error.collection), 409
@@ -74,6 +79,21 @@ def get_article(article_id):
 @bp.patch("/articles/<int:article_id>")
 def update_article(article_id):
     return jsonify(get_library().update_article(article_id, json_object()))
+
+
+@bp.post("/articles/<int:article_id>/archive")
+def archive_article(article_id):
+    return jsonify(get_library().archive_article(article_id))
+
+
+@bp.post("/articles/<int:article_id>/restore")
+def restore_article(article_id):
+    return jsonify(get_library().restore_article(article_id))
+
+
+@bp.get("/archive")
+def list_archive():
+    return jsonify(articles=get_library().list_archive(status=status_filter()))
 
 
 # --------------------------------------------------------------- collections

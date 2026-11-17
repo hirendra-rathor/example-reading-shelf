@@ -5,6 +5,7 @@ from contextlib import closing
 from pathlib import Path
 
 from conftest import FOCACCIA_URL, save
+from reading_shelf.library import SCHEMA_VERSION
 
 
 def test_saved_article_is_listed_as_to_read_with_an_empty_note(client):
@@ -88,5 +89,5 @@ def test_schema_is_versioned_and_created_only_once(client, restart, instance_pat
 
     database_path = Path(instance_path) / "reading-shelf.sqlite3"
     with closing(sqlite3.connect(database_path)) as database:
-        assert database.execute("PRAGMA user_version").fetchone()[0] == 2
+        assert database.execute("PRAGMA user_version").fetchone()[0] == SCHEMA_VERSION
         assert database.execute("SELECT COUNT(*) FROM articles").fetchone()[0] == 1
