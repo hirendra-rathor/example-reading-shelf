@@ -14,7 +14,7 @@ Reading Shelf uses a personal reading library as an example scenario for applyin
 
 ![A reader saves a link to Wikipedia’s Focaccia article, adds a note, and marks it as Reading. A developer and coding assistant build the app with input from an architect, a security engineer, and a maintainer.](docs/assets/reading-shelf-brief.svg)
 
-This is the **Codex** implementation, available on `main` and `codex` branches. Read the [recorded Codex build](docs/milestones/README.md), or explore the [Claude Code implementation](https://github.com/hirendra-rathor/example-reading-shelf/tree/claude).
+This is the **Codex** implementation on the `codex` branch. Read the [recorded Codex build](docs/milestones/README.md), or explore the [Claude Code implementation](https://github.com/hirendra-rathor/example-reading-shelf/tree/claude) on `main` and `claude`.
 
 ## Work through the example
 
@@ -29,8 +29,8 @@ Give your coding assistant one prompt at a time. Review the proposal, ask for an
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then clone and start the example from the repository root.
 
 ```sh
-git clone https://github.com/hirendra-rathor/example-reading-shelf.git
-cd example-reading-shelf
+git clone --branch codex https://github.com/hirendra-rathor/example-reading-shelf.git reading-shelf-codex
+cd reading-shelf-codex
 uv run --locked flask --app reading_shelf run --port 5050
 ```
 
