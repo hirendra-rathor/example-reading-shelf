@@ -1,25 +1,4 @@
-# Build Reading Shelf in three prompts
-
-Give your coding assistant one request at a time. Each prompt describes what the service should support. Use the assistant’s proposal to review the design decisions and iterate on them as you see fit.
-
-Use **Design Proposal** (`ca-design-proposal`) to design each milestone with Claude Code. Select it with `/ca-design-proposal`. [Get the skill](https://github.com/hirendra-rathor/continuous-assurance)
-
-## Set up the dev environment
-
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then use a fresh clone for your experiment. Create a working branch at the `starter` tag and use that branch for all three milestones. The starter is the shared starting point for both recorded builds.
-
-```sh
-git clone https://github.com/hirendra-rathor/example-reading-shelf.git experiment-reading-shelf
-cd experiment-reading-shelf
-git switch -c build-reading-shelf starter
-uv run --locked python -m pytest -q
-```
-
-At the starter checkpoint, you should see `1 passed`. Its page is a placeholder.
-
-The prompt blocks on this branch use Claude Code's `/ca-design-proposal` spelling. Checking out `starter` also checks out its shared guide, whose prompt blocks use `$ca-design-proposal`; use `/ca-design-proposal` in Claude Code when following that guide, or keep this branch's guide open.
-
-Give your assistant one prompt at a time. Review the proposal and its diagrams and ask for any revisions. When the design fits, reply, “Approved. Implement this milestone and run its checks.” Try the scenario in the browser, run `uv run --locked python -m pytest`, and commit the result before the next milestone.
+# Reading Shelf prompts used by Claude Code
 
 ## 1. Capture and track reading
 

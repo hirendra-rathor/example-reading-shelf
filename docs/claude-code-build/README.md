@@ -39,7 +39,3 @@ Only details that could be checked during the build are listed.
 | uv | 0.11.16 | `uv --version` |
 | Diagram rendering | rsvg-convert 2.62.2 | `rsvg-convert --version` |
 | Screenshots | Built-in browser in the Claude desktop app; Google Chrome 157.0.8103.79 (headless) | Tool output; `--version` |
-
-## Run the build
-
-Follow [Run the example locally](../../README.md#run-the-example-locally) in the project README.
