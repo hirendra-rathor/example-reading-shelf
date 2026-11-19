@@ -1,25 +1,20 @@
 # Build Reading Shelf in three prompts
 
-Give your coding assistant one request at a time. Each prompt describes what the service should support. Use the assistant’s proposal to review the design decisions and iterate on them as you see fit.
-
-Use **Design Proposal** (`ca-design-proposal`) to design each milestone with your coding assistant. To select the skill directly, use `$ca-design-proposal` in Codex or `/ca-design-proposal` in Claude Code. [Get the skill](https://github.com/hirendra-rathor/continuous-assurance)
-
 ## Set up the dev environment
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then use a fresh clone for your experiment. Create a working branch at the `starter` tag and use that branch for all three milestones. The starter is the shared starting point for both recorded builds.
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and the **Design Proposal** skill from the [Continuous Assurance repository](https://github.com/hirendra-rathor/continuous-assurance). Clone Reading Shelf and run its test.
 
 ```sh
-git clone https://github.com/hirendra-rathor/example-reading-shelf.git experiment-reading-shelf
-cd experiment-reading-shelf
-git switch -c build-reading-shelf starter
+git clone https://github.com/hirendra-rathor/example-reading-shelf.git
+cd example-reading-shelf
 uv run --locked python -m pytest -q
 ```
 
-At the starter checkpoint, you should see `1 passed`. Its page is a placeholder.
+You should see `1 passed`. The app serves a placeholder page until you implement the first milestone.
 
-The starter guide supports both assistants. Its prompt blocks use Codex's `$ca-design-proposal` spelling; in Claude Code, use `/ca-design-proposal` instead.
+Open this checkout in your coding assistant and paste the first prompt. The blocks below use Codex’s `$ca-design-proposal` spelling. In Claude Code, use `/ca-design-proposal` on the line requesting the proposal.
 
-Give your assistant one prompt at a time. Review the proposal and its diagrams and ask for any revisions. When the design fits, reply, “Approved. Implement this milestone and run its checks.” Try the scenario in the browser, run `uv run --locked python -m pytest`, and commit the result before the next milestone.
+Review the proposal and its diagrams and ask for any revisions. When the design fits, reply, “Approved. Implement this milestone and run its checks.” Before pasting the next prompt, try the new behavior in your browser.
 
 ## 1. Capture and track reading
 
