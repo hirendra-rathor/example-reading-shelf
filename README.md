@@ -1,45 +1,9 @@
-# Reading Shelf
+# Reading Shelf — Codex implementation
 
-> **Disclaimer:** This repository is a runnable educational example for showcasing the methodology
-> of using Continuous Assurance skills. It is not intended as a production application.
-> The code, build prompts, and recorded walkthrough are provided
-> to demonstrate the methodology and support learning.
+Codex built this personal reading library from three prompts using the Continuous Assurance Design Proposal skill. You can save an article with a note and a reading status, file it in several collections, and archive it. When you restore the article, it returns to its collections with its note and status intact.
 
-The [Continuous Assurance repository](https://github.com/hirendra-rathor/continuous-assurance) provides two skills for applying a design methodology with a coding assistant. The skills use six design perspectives to connect what a user expects with the parts of the system responsible for that behavior and the tests that show whether it works.
+The Flask application is in `reading_shelf/` and its tests are in `tests/`.
 
-- **Design Proposal** helps you compare a requested change with current behavior, review the design decisions, and agree on how to verify the result before implementation.
-- **Explore Design** helps you understand how the system works today by tracing a question through its code, tests, and documentation.
+For the methodology behind this educational example, read [Enforcing Design Methodology with Coding Assistants](https://hirendra-rathor.github.io/articles/enforcing-design-methodology-with-coding-assistants/).
 
-Reading Shelf uses a personal reading library as an example scenario for applying Continuous Assurance skills to software design, implementation, and verification. The scenario explores questions such as: when a reader saves an article in two collections and edits its note in one, what should they see in the other? The recorded build follows that question from the reader’s request through the proposed design to a check in the example implementation.
-
-![A reader saves a link to Wikipedia’s Focaccia article, adds a note, and marks it as Reading. A developer and coding assistant build the app with input from an architect, a security engineer, and a maintainer.](docs/assets/reading-shelf-brief.svg)
-
-This is the **Codex** implementation on the `codex` branch. Read the [recorded Codex build](docs/milestones/README.md), or explore the [Claude Code implementation](https://github.com/hirendra-rathor/example-reading-shelf/tree/claude) on `main` and `claude`.
-
-## Work through the example
-
-Install the skills by following the instructions in the [Continuous Assurance repository](https://github.com/hirendra-rathor/continuous-assurance).
-
-Use the [three build prompts](docs/build-prompts.md) to work through the Reading Shelf example one milestone at a time. First, save an article with a note and reading status. Then organize articles into collections. Finally, add archiving and restoring.
-
-Give your coding assistant one prompt at a time. Review the proposal, ask for any changes you want, and then have the assistant implement the agreed design. Try the behavior yourself and run the tests before moving to the next prompt.
-
-## Run the example locally
-
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then clone and start the example from the repository root.
-
-```sh
-git clone --branch codex https://github.com/hirendra-rathor/example-reading-shelf.git reading-shelf-codex
-cd reading-shelf-codex
-uv run --locked flask --app reading_shelf run --port 5050
-```
-
-Open [Reading Shelf](http://127.0.0.1:5050/) in your browser. Run the tests from the same directory.
-
-```sh
-uv run --locked python -m pytest
-```
-
-## License
-
-The application and tutorial materials are available under the [MIT License](LICENSE).
+The application and tutorial materials are available under the MIT License (see `LICENSE`).
