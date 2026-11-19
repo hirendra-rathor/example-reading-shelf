@@ -12,7 +12,7 @@ uv run --locked python -m pytest -q
 
 You should see `1 passed`. The app serves a placeholder page until you implement the first milestone.
 
-Open this checkout in your coding assistant and paste the first prompt. The blocks below use Codex’s `$ca-design-proposal` spelling. In Claude Code, use `/ca-design-proposal` on the line requesting the proposal.
+Open this checkout in your coding assistant and paste the first prompt. The prompts use `/ca-design-proposal` for Claude Code. In Codex, change it to `$ca-design-proposal` before sending each prompt.
 
 Review the proposal and its diagrams and ask for any revisions. When the design fits, reply, “Approved. Implement this milestone and run its checks.” Before pasting the next prompt, try the new behavior in your browser.
 
@@ -34,7 +34,7 @@ I’d like to use Flask to serve the page and a JSON API. Plain HTML, CSS, and
 JavaScript are fine for the page, and I’d like to keep my library in a local
 SQLite database.
 
-Give me a design proposal [use $ca-design-proposal].
+Give me a design proposal [use /ca-design-proposal].
 ```
 
 ## 2. Organize the library
@@ -56,7 +56,7 @@ want that list for my whole library, and sometimes just for one collection. If
 I finish an article and mark it “Read” in one collection, it should drop off
 the “Reading” list in the other one too.
 
-Give me a design proposal [use $ca-design-proposal].
+Give me a design proposal [use /ca-design-proposal].
 ```
 
 ## 3. Archive and restore
@@ -75,7 +75,7 @@ be able to click the same title to open the original link, see my note, and
 carry on with the article still marked “Reading”. This functionality should
 work even if the app is restarted between archiving and restoring.
 
-Give me a design proposal [use $ca-design-proposal].
+Give me a design proposal [use /ca-design-proposal].
 
 I’d also like to know how I can check that everything comes back when I
 restore one.
